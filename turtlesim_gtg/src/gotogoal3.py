@@ -56,23 +56,23 @@ class TurtleBot:
 
 
         if goal_pose.x < 0:
-            rospy.loginfo("Valor de x invalido, fora do campo")
-            rospy.loginfo("Ajustado para 0")
+            rospy.loginfo("Value of x invalid, out of field")
+            rospy.loginfo("Set to 0")
             goal_pose.x = 0
         if goal_pose.x > 11:
-            rospy.loginfo("Valor de x invalido, fora do campo")
-            rospy.loginfo("Ajustado para 11")
+            rospy.loginfo("Value of x invalid, out of field")
+            rospy.loginfo("Set to 11")
             goal_pose.x = 11
         if goal_pose.y < 0:
-            rospy.loginfo("Valor de v invalido, fora do campo")
-            rospy.loginfo("Ajustado para 0")
+            rospy.loginfo("Value of y invalid, out of field")
+            rospy.loginfo("Set to 0")
             goal_pose.y = 0
         if goal_pose.y > 11:
-            rospy.loginfo("Valor de y invalido, fora do campo")
-            rospy.loginfo("Ajustado para 11")
+            rospy.loginfo("Value of y invalid, out of field")
+            rospy.loginfo("Set to 0")
             goal_pose.y = 11
         if distance_tolerance < 0.1:
-            rospy.loginfo("Valor de tolerancia invalido , ajustado para 0.1")
+            rospy.loginfo("Very low tolerance value, set to 0.1")
             distance_tolerance = 0.1
        
        # Adjust angle of turtle
