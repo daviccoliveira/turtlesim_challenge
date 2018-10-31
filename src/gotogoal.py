@@ -15,6 +15,7 @@ class TurtleBot:
 
         # Publisher which will publish to the topic '/turtle1/cmd_vel'.
         self.velocity_publisher = rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+        
         # A subscriber to the topic '/turtle1/pose'. self.update_pose is called
         # when a message of type Pose is received.
         self.pose_subscriber = rospy.Subscriber('/turtle1/pose', Pose, self.update_pose)
@@ -31,12 +32,12 @@ class TurtleBot:
         self.pose.theta = round(self.pose.theta, 4)
 
     def euclidean_distance(self, goal_pose):
-        """Euclidean distance between current pose and the goal."""
+        # Distance from the turtle to the point
         return sqrt(pow((goal_pose.x - self.pose.x), 2) +
                     pow((goal_pose.y - self.pose.y), 2))
 
     def steering_angle(self, goal_pose):
-        """See video: https://www.youtube.com/watch?v=Qh15Nol5htM."""
+        # Turtle angle calculation
         return atan2(goal_pose.y - self.pose.y, goal_pose.x - self.pose.x)
 
 
@@ -48,35 +49,40 @@ class TurtleBot:
         goal_pose.x = input("Set your x goal: ")
         goal_pose.y = input("Set your y goal: ")
 
-        # Please, insert a number slightly greater than 0 (e.g. 0.01).
+        # Please, insert a number slightly greater than 0.01 
         distance_tolerance = input("Set your tolerance: ")
 
         vel_msg = Twist()
 
 
         if goal_pose.x < 0:
-            rospy.loginfo("valor de x invalido , ajustado para 0")
+            rospy.loginfo("Valor de x invalido, fora do campo")
+            rospy.loginfo("Ajustado para 0")
             goal_pose.x = 0
         if goal_pose.x > 11:
-            rospy.loginfo("valor de x invalido , ajustado para 0")
+            rospy.loginfo("Valor de x invalido, fora do campo")
+            rospy.loginfo("Ajustado para 11")
             goal_pose.x = 11
         if goal_pose.y < 0:
-            rospy.loginfo("valor de y invalido, ajustado para 0")
+            rospy.loginfo("Valor de v invalido, fora do campo")
+            rospy.loginfo("Ajustado para 0")
             goal_pose.y = 0
         if goal_pose.y > 11:
-            rospy.loginfo("valor de y invalido, ajustado para 0")
+            rospy.loginfo("Valor de y invalido, fora do campo")
+            rospy.loginfo("Ajustado para 11")
             goal_pose.y = 11
         if distance_tolerance < 0.1:
-            rospy.loginfo("valor de tolerancia invalido , ajustado para 0.5")
+            rospy.loginfo("Valor de tolerancia invalido , ajustado para 0.1")
             distance_tolerance = 0.1
        
+       # Adjust angle of turtle
         while self.steering_angle(goal_pose) > self.pose.theta:
             vel_msg.linear.x = 0
-            vel_msg.angular.z = 3
+            vel_msg.angular.z = 1
             self.velocity_publisher.publish(vel_msg)
         while self.steering_angle(goal_pose) < self.pose.theta:
             vel_msg.linear.x = 0    
-            vel_msg.angular.z = -3
+            vel_msg.angular.z = -1
             self.velocity_publisher.publish(vel_msg)
 
         # Stopping our robot after the movement is over.
@@ -84,8 +90,9 @@ class TurtleBot:
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
 
+        # Make the turtle walk to the point
         while self.euclidean_distance(goal_pose) >= distance_tolerance:
-            vel_msg.linear.x = 3
+            vel_msg.linear.x = 1
             vel_msg.angular.z = 0
             self.velocity_publisher.publish(vel_msg)
         # Stopping our robot after the movement is over.
@@ -93,14 +100,9 @@ class TurtleBot:
         vel_msg.angular.z = 0
         self.velocity_publisher.publish(vel_msg)
 
-
-
-
-
-        # If we press control + C, the node will stop.
-        #rospy.spin()
-        rospy.loginfo("Caminho concluido!")
-        #rospy.init_node('turtlebot_controller', anonymous=False)
+        # End of mission
+        rospy.loginfo("Missão concluida!")
+        
 
 if __name__ == '__main__':
     try:
